@@ -1,0 +1,20 @@
+<nav class="bg-gray-800 text-white px-4 py-3 shadow">
+  <div class="container mx-auto flex justify-between items-center">
+    <div class="text-xl font-bold">
+      <a href="{% url 'dashboard' %}">IT Asset Manager</a>
+    </div>
+    <ul class="flex space-x-6 text-sm">
+      <li><a href="{% url 'asset_list' %}" class="hover:text-gray-300">Assets</a></li>
+      <li><a href="{% url 'asset_create' %}" class="hover:text-gray-300">+ New Asset</a></li>
+
+      <li><a href="{% url 'employee_list' %}" class="hover:text-gray-300">Employees</a></li>
+      <li><a href="{% url 'employee_create' %}" class="hover:text-gray-300">+ Add Employee</a></li>
+
+      <li><a href="{% url 'repair_list' %}" class="hover:text-gray-300">Repairs</a></li>
+      <li><a href="{% url 'disposal_list' %}" class="hover:text-gray-300">Disposals</a></li>
+
+      <li><a href="{% url 'asset_history_list' %}" class="hover:text-gray-300">History</a></li>
+      <li><a href="{% url 'report_overview' %}" class="hover:text-gray-300">Reports</a></li>
+    </ul>
+  </div>
+</nav>

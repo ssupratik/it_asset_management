@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>IT Asset Management</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {},
+            },
+        }
+    </script>
+    <script src="https://cdn.jsdelivr.net/npm/daisyui@3.7.3/dist/full.js"></script>
+    {% load django_browser_reload %}
+    {% django_browser_reload_script %}
+</head>
+<body class="bg-gray-50 text-gray-800">
+
+    <!-- ✅ Navbar -->
+    <div class="navbar bg-blue-600 text-white px-6">
+        <div class="flex-1">
+            <a href="{% url 'dashboard' %}" class="text-xl font-bold">IT Asset Management</a>
+        </div>
+        <div class="flex-none space-x-4">
+            <a href="{% url 'asset_list' %}" class="btn btn-sm btn-ghost text-white">Assets</a>
+            <a href="{% url 'asset_create' %}" class="btn btn-sm btn-ghost text-white">+ New Asset</a>
+            <a href="{% url 'employee_list' %}" class="btn btn-sm btn-ghost text-white">Employees</a>
+            <a href="{% url 'employee_create' %}" class="btn btn-sm btn-ghost text-white">+ Add Employee</a>
+            <a href="{% url 'asset_history_list' %}" class="btn btn-sm btn-ghost text-white">History</a>
+        </div>
+    </div>
+
+    <!-- ✅ Page Content -->
+    <main class="p-6">
+        {% block content %}{% endblock %}
+    </main>
+
+</body>
+</html>
