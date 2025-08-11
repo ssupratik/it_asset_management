@@ -1,31 +1,38 @@
-{% extends 'base.html' %}
-
+{% extends "base.html" %}
 {% block content %}
-<h2 class="text-xl font-bold mb-4">Asset History</h2>
-<table class="table w-full">
-    <thead>
-        <tr>
-            <th>Asset</th>
-            <th>Action</th>
-            <th>Assigned To</th>
-            <th>Remarks</th>
-            <th>Timestamp</th>
-        </tr>
-    </thead>
-    <tbody>
-        {% for entry in history %}
-        <tr>
-            <td>{{ entry.asset.name }}</td>
-            <td>{{ entry.action }}</td>
-            <td>{{ entry.assigned_to.name if entry.assigned_to else "—" }}</td>
-            <td>{{ entry.remarks }}</td>
-            <td>{{ entry.timestamp|date:"Y-m-d H:i" }}</td>
-        </tr>
-        {% empty %}
-        <tr>
-            <td colspan="5" class="text-center">No history found.</td>
-        </tr>
-        {% endfor %}
-    </tbody>
-</table>
+<div class="container mx-auto px-6 py-6">
+    <h1 class="text-2xl font-semibold text-gray-800 mb-4">All Asset History</h1>
+    <div class="bg-white shadow rounded-lg overflow-hidden">
+        <table class="min-w-full table-auto border-collapse">
+            <thead class="bg-gray-50 border-b">
+                <tr>
+                    <th class="py-3 px-4 text-left text-sm font-medium text-gray-600">Asset Tag</th>
+                    <th class="py-3 px-4 text-left text-sm font-medium text-gray-600">Asset Name</th>
+                    <th class="py-3 px-4 text-left text-sm font-medium text-gray-600">Action</th>
+                    <th class="py-3 px-4 text-left text-sm font-medium text-gray-600">User</th>
+                    <th class="py-3 px-4 text-left text-sm font-medium text-gray-600">Timestamp</th>
+                </tr>
+            </thead>
+            <tbody class="divide-y divide-gray-200">
+                {% for record in history %}
+                <tr class="hover:bg-gray-100">
+                    <td class="py-2 px-4">
+                        <a href="{% url 'asset_history' record.asset.pk %}" class="text-blue-600 hover:underline">
+                            {{ record.asset.asset_tag }}
+                        </a>
+                    </td>
+                    <td class="py-2 px-4">{{ record.asset.make_model }}</td>
+                    <td class="py-2 px-4">{{ record.get_action_display }}</td>
+                    <td class="py-2 px-4">{{ record.user.username|default:"System" }}</td>
+                    <td class="py-2 px-4">{{ record.timestamp|date:"Y-m-d H:i" }}</td>
+                </tr>
+                {% empty %}
+                <tr>
+                    <td colspan="5" class="py-4 text-center text-gray-500">No history found.</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
 {% endblock %}

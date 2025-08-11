@@ -2,12 +2,29 @@
 
 import csv
 
+from django.forms.models import model_to_dict
 from django.http import HttpResponse
 from django.shortcuts import get_object_or_404, redirect, render
 from django.views.generic import ListView
 
 from .forms import AssetForm, EmployeeForm
 from .models import Asset, AssetHistory, Employee
+
+from django.shortcuts import render, get_object_or_404
+from .models import Asset, AssetHistory
+
+def asset_history_list(request):
+    history = AssetHistory.objects.select_related("asset", "user").order_by("-timestamp")
+    return render(request, "assets/asset_history_list.html", {"history": history})
+
+
+def asset_history(request, pk):
+    asset = get_object_or_404(Asset, pk=pk)
+    history = asset.history.select_related("user").order_by("-timestamp")
+    return render(request, "assets/asset_history.html", {
+        "asset": asset,
+        "history": history
+    })
 
 
 def asset_detail(request, pk):
@@ -24,14 +41,6 @@ def employee_create(request):
     else:
         form = EmployeeForm()
     return render(request, "employee_create.html", {"form": form})
-
-
-def asset_history_list(request):
-    history = AssetHistory.objects.select_related("asset", "assigned_to").order_by(
-        "-timestamp"
-    )
-    return render(request, "asset_history_list.html", {"history": history})
-
 
 def employee_list(request):
     employees = Employee.objects.all()
@@ -179,14 +188,23 @@ def asset_create(request):
 def asset_update(request, pk):
     asset = get_object_or_404(Asset, pk=pk)
     previous_alloted_to = asset.alloted_to  # Track before change
+    original_data = model_to_dict(asset)    # Snapshot before update
 
     if request.method == "POST":
         form = AssetForm(request.POST, request.FILES, instance=asset)
         if form.is_valid():
             updated_asset = form.save()
+            new_data = model_to_dict(updated_asset)
+
             remarks = []
 
-            # Check for reassignment / return
+            # Detect field changes
+            for field, old_value in original_data.items():
+                new_value = new_data.get(field)
+                if old_value != new_value:
+                    remarks.append(f"{field.replace('_', ' ').title()} changed from '{old_value}' to '{new_value}'")
+
+            # Check assignment changes
             new_alloted_to = updated_asset.alloted_to
             if previous_alloted_to != new_alloted_to:
                 if new_alloted_to:
@@ -195,7 +213,6 @@ def asset_update(request, pk):
                 else:
                     action = "returned"
                     remarks.append("Asset returned/unassigned")
-
                 AssetHistory.objects.create(
                     asset=updated_asset,
                     user=request.user,
@@ -203,17 +220,18 @@ def asset_update(request, pk):
                     remarks="; ".join(remarks),
                 )
 
-            # Always log general update
+            # Always log updates
             AssetHistory.objects.create(
-                asset=updated_asset,
-                user=request.user,
+                asset=asset,
+                user=request.user if request.user.is_authenticated else None,
                 action="updated",
-                remarks="Asset updated.",
+                remarks="Asset updated successfully."
             )
 
             return redirect("asset_list")
     else:
         form = AssetForm(instance=asset)
+
     return render(
         request, "assets/asset_form.html", {"form": form, "title": "Edit Asset"}
     )

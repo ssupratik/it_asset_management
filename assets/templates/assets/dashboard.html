@@ -39,7 +39,7 @@
             {% for asset in assets %}
             <tr class="hover:bg-gray-50">
                 <td class="px-4 py-2">{{ asset.id }}</td>
-                <td class="px-4 py-2">{{ asset.name }}</td>
+                <td class="px-4 py-2">{{ asset.make_model }}</td>
                 <td class="px-4 py-2">{{ asset.category }}</td>
                 <td class="px-4 py-2">{{ asset.condition }}</td>
                 <td class="px-4 py-2">{{ asset.alloted_to|default:"-" }}</td>
