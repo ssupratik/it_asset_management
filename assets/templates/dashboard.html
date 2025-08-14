@@ -1,0 +1,47 @@
+{% extends "base.html" %}
+{% block content %}
+<section class="section">
+    <div class="container">
+        <h1 class="title">Dashboard</h1>
+        
+        <div class="columns">
+            <div class="column">
+                <div class="box has-text-centered">
+                    <p class="title">{{ total_assets }}</p>
+                    <p class="subtitle">Total Assets</p>
+                </div>
+            </div>
+            <div class="column">
+                <div class="box has-text-centered">
+                    <p class="title">{{ total_employees }}</p>
+                    <p class="subtitle">Total Employees</p>
+                </div>
+            </div>
+        </div>
+
+        <h2 class="subtitle">Recent Asset History</h2>
+        <table class="table is-striped is-fullwidth">
+            <thead>
+                <tr>
+                    <th>Asset</th>
+                    <th>Employee</th>
+                    <th>Action</th>
+                    <th>Date</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for record in recent_history %}
+                <tr>
+                    <td>{{ record.asset.name }}</td>
+                    <td>{{ record.employee.name }}</td>
+                    <td>{{ record.action }}</td>
+                    <td>{{ record.transfer_date }}</td>
+                </tr>
+                {% empty %}
+                <tr><td colspan="4">No history available.</td></tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</section>
+{% endblock %}

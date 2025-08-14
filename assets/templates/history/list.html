@@ -1,0 +1,35 @@
+{% extends 'base.html' %}
+{% block content %}
+<section class="section">
+    <div class="container">
+        <h1 class="title">Asset Transfer History</h1>
+        <a href="{% url 'history_create' %}" class="button is-primary mb-4">Add History</a>
+        <table class="table is-striped is-fullwidth">
+            <thead>
+                <tr>
+                    <th>Asset</th>
+                    <th>From</th>
+                    <th>To</th>
+                    <th>Date</th>
+                    <th>Remarks</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for history in histories %}
+                <tr>
+                    <td>{{ history.asset.name }}</td>
+                    <td>{{ history.from_employee }}</td>
+                    <td>{{ history.to_employee }}</td>
+                    <td>{{ history.transfer_date }}</td>
+                    <td>{{ history.remarks }}</td>
+                </tr>
+                {% empty %}
+                <tr>
+                    <td colspan="5">No history records found.</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</section>
+{% endblock %}

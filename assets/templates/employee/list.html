@@ -1,0 +1,40 @@
+{% extends 'base.html' %}
+{% block content %}
+<section class="section">
+    <div class="container">
+        <h1 class="title">Employees</h1>
+        <a href="{% url 'employee_create' %}" class="button is-primary mb-3">Add Employee</a>
+        <table class="table is-striped is-fullwidth">
+            <thead>
+                <tr>
+                    <th>Name</th>
+                    <th>Department</th>
+                    <th>Designation</th>
+                    <th>Email</th>
+                    <th>Phone</th>
+                    <th>Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for emp in employees %}
+                <tr>
+                    <td>{{ emp.first_name }} {{ emp.last_name }}</td>
+                    <td>{{ emp.department }}</td>
+                    <td>{{ emp.designation }}</td>
+                    <td>{{ emp.email }}</td>
+                    <td>{{ emp.phone }}</td>
+                    <td>
+                        <a href="{% url 'employee_edit' emp.id %}" class="button is-small is-info">Edit</a>
+                        <a href="{% url 'employee_delete' emp.id %}" class="button is-small is-danger">Delete</a>
+                    </td>
+                </tr>
+                {% empty %}
+                <tr>
+                    <td colspan="6">No employees found.</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</section>
+{% endblock %}

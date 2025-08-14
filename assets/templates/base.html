@@ -1,40 +1,82 @@
+<!-- templates/base.html -->
 <!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>IT Asset Management</title>
-    <script src="https://cdn.tailwindcss.com"></script>
-    <script>
-        tailwind.config = {
-            theme: {
-                extend: {},
-            },
-        }
-    </script>
-    <script src="https://cdn.jsdelivr.net/npm/daisyui@3.7.3/dist/full.js"></script>
-    {% load django_browser_reload %}
-    {% django_browser_reload_script %}
+    <title>{% block title %}IT Asset Management{% endblock %}</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <!-- Bulma CSS via CDN -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bulma@1.0.0/css/bulma.min.css">
+
+    {% block extra_css %}{% endblock %}
 </head>
-<body class="bg-gray-50 text-gray-800">
+<body>
+    <!-- Navbar -->
+    <nav class="navbar is-dark" role="navigation" aria-label="main navigation">
+        <div class="navbar-brand">
+            <a class="navbar-item" href="{% url 'dashboard' %}">
+                <strong>IT Asset Management</strong>
+            </a>
 
-    <!-- ✅ Navbar -->
-    <div class="navbar bg-blue-600 text-white px-6">
-        <div class="flex-1">
-            <a href="{% url 'dashboard' %}" class="text-xl font-bold">IT Asset Management</a>
+            <a role="button" class="navbar-burger" aria-label="menu" aria-expanded="false" data-target="navbarMenu">
+                <span aria-hidden="true"></span>
+                <span aria-hidden="true"></span>
+                <span aria-hidden="true"></span>
+            </a>
         </div>
-        <div class="flex-none space-x-4">
-            <a href="{% url 'asset_list' %}" class="btn btn-sm btn-ghost text-white">Assets</a>
-            <a href="{% url 'asset_create' %}" class="btn btn-sm btn-ghost text-white">+ New Asset</a>
-            <a href="{% url 'employee_list' %}" class="btn btn-sm btn-ghost text-white">Employees</a>
-            <a href="{% url 'employee_create' %}" class="btn btn-sm btn-ghost text-white">+ Add Employee</a>
-            <a href="{% url 'asset_history_list' %}" class="btn btn-sm btn-ghost text-white">History</a>
+
+        <div id="navbarMenu" class="navbar-menu">
+            {% if user.is_authenticated %}
+                <div class="navbar-start">
+                    <a class="navbar-item" href="{% url 'dashboard' %}">Dashboard</a>
+                    <a class="navbar-item" href="{% url 'employee_list' %}">Employees</a>
+                    <a class="navbar-item" href="{% url 'asset_list' %}">Assets</a>
+                    <a class="navbar-item" href="{% url 'history_list' %}">History</a>
+                </div>
+            {% endif %}
+
+            <div class="navbar-end">
+                <div class="navbar-item">
+                    <div class="buttons">
+                        {% if user.is_authenticated %}
+                            <form method="post" action="{% url 'logout' %}">
+                                {% csrf_token %}
+                                <button type="submit" class="button is-light">
+                                    Log out
+                                </button>
+                            </form>
+                        {% else %}
+                            <a class="button is-light" href="{% url 'login' %}">
+                                Log in
+                            </a>
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
         </div>
-    </div>
+    </nav>
 
-    <!-- ✅ Page Content -->
-    <main class="p-6">
-        {% block content %}{% endblock %}
-    </main>
+    <!-- Page Content -->
+    <section class="section">
+        <div class="container">
+            {% block content %}{% endblock %}
+        </div>
+    </section>
 
+    <!-- Optional: Bulma navbar burger JS -->
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const burger = document.querySelector('.navbar-burger');
+            const menu = document.getElementById(burger.dataset.target);
+
+            burger.addEventListener('click', () => {
+                burger.classList.toggle('is-active');
+                menu.classList.toggle('is-active');
+            });
+        });
+    </script>
+
+    {% block extra_js %}{% endblock %}
 </body>
 </html>

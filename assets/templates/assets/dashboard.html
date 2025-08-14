@@ -1,52 +1,60 @@
 {% extends "base.html" %}
 
 {% block content %}
-<h2 class="text-2xl font-bold mb-6">Dashboard</h2>
+<h2 class="title is-3 mb-5">Dashboard</h2>
 
 <!-- Stats cards -->
-<div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
-    <div class="bg-white shadow-md rounded-lg p-4">
-        <h3 class="text-lg font-semibold mb-2">Total Assets</h3>
-        <p class="text-3xl font-bold text-blue-700">{{ total_assets }}</p>
+<div class="columns is-multiline">
+    <div class="column is-one-quarter">
+        <div class="box has-text-centered">
+            <h3 class="subtitle is-6">Total Assets</h3>
+            <p class="title is-2 has-text-primary">{{ total_assets }}</p>
+        </div>
     </div>
-    <div class="bg-white shadow-md rounded-lg p-4">
-        <h3 class="text-lg font-semibold mb-2">Assigned</h3>
-        <p class="text-3xl font-bold text-green-700">{{ assigned_assets }}</p>
+    <div class="column is-one-quarter">
+        <div class="box has-text-centered">
+            <h3 class="subtitle is-6">Assigned</h3>
+            <p class="title is-2 has-text-success">{{ assigned_assets }}</p>
+        </div>
     </div>
-    <div class="bg-white shadow-md rounded-lg p-4">
-        <h3 class="text-lg font-semibold mb-2">Under Repair</h3>
-        <p class="text-3xl font-bold text-yellow-600">{{ under_repair }}</p>
+    <div class="column is-one-quarter">
+        <div class="box has-text-centered">
+            <h3 class="subtitle is-6">Under Repair</h3>
+            <p class="title is-2 has-text-warning">{{ under_repair }}</p>
+        </div>
     </div>
-    <div class="bg-white shadow-md rounded-lg p-4">
-        <h3 class="text-lg font-semibold mb-2">Disposed</h3>
-        <p class="text-3xl font-bold text-red-600">{{ disposed_assets }}</p>
+    <div class="column is-one-quarter">
+        <div class="box has-text-centered">
+            <h3 class="subtitle is-6">Disposed</h3>
+            <p class="title is-2 has-text-danger">{{ disposed_assets }}</p>
+        </div>
     </div>
 </div>
 
 <!-- Recent assets table -->
-<div class="bg-white shadow-md rounded-lg overflow-x-auto">
-    <table class="min-w-full divide-y divide-gray-200 text-sm text-left">
-        <thead class="bg-gray-100 text-gray-700 font-semibold">
+<div class="box">
+    <table class="table is-fullwidth is-hoverable is-striped">
+        <thead>
             <tr>
-                <th class="px-4 py-3">ID</th>
-                <th class="px-4 py-3">Name</th>
-                <th class="px-4 py-3">Category</th>
-                <th class="px-4 py-3">Status</th>
-                <th class="px-4 py-3">Allotted To</th>
+                <th>ID</th>
+                <th>Name</th>
+                <th>Category</th>
+                <th>Status</th>
+                <th>Allotted To</th>
             </tr>
         </thead>
-        <tbody class="divide-y divide-gray-200">
+        <tbody>
             {% for asset in assets %}
-            <tr class="hover:bg-gray-50">
-                <td class="px-4 py-2">{{ asset.id }}</td>
-                <td class="px-4 py-2">{{ asset.make_model }}</td>
-                <td class="px-4 py-2">{{ asset.category }}</td>
-                <td class="px-4 py-2">{{ asset.condition }}</td>
-                <td class="px-4 py-2">{{ asset.alloted_to|default:"-" }}</td>
+            <tr>
+                <td>{{ asset.id }}</td>
+                <td>{{ asset.make_model }}</td>
+                <td>{{ asset.category }}</td>
+                <td>{{ asset.condition }}</td>
+                <td>{{ asset.alloted_to|default:"-" }}</td>
             </tr>
             {% empty %}
             <tr>
-                <td colspan="5" class="px-4 py-3 text-center text-gray-500">No assets found.</td>
+                <td colspan="5" class="has-text-centered has-text-grey-light">No assets found.</td>
             </tr>
             {% endfor %}
         </tbody>
@@ -54,7 +62,9 @@
 </div>
 
 <!-- View all link -->
-<div class="mt-6 text-right">
-    <a href="{% url 'asset_list' %}" class="text-blue-600 hover:text-blue-800 font-medium underline">View All Assets →</a>
+<div class="has-text-right">
+    <a href="{% url 'asset_list' %}" class="button is-link is-light">
+        View All Assets →
+    </a>
 </div>
 {% endblock %}

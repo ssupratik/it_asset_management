@@ -1,0 +1,16 @@
+{% extends 'base.html' %}
+{% block content %}
+<section class="section">
+    <div class="container">
+        <h1 class="title">{{ title }}</h1>
+        <form method="post">
+            {% csrf_token %}
+            <div class="box">
+                {{ form.as_p }}
+            </div>
+            <button type="submit" class="button is-primary">Save</button>
+            <a href="{% url 'employee_list' %}" class="button is-light">Cancel</a>
+        </form>
+    </div>
+</section>
+{% endblock %}

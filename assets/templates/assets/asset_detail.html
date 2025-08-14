@@ -1,76 +1,16 @@
 {% extends "base.html" %}
 {% block content %}
-<div class="max-w-6xl mx-auto px-4 py-6">
-    
-    <!-- Header -->
-    <div class="flex flex-col md:flex-row justify-between items-start md:items-center mb-6">
-        <h1 class="text-2xl font-bold text-gray-800">
-            Asset Details - {{ asset.make_model }}
-        </h1>
-        <div class="mt-3 md:mt-0 flex gap-2">
-            <a href="{% url 'asset_update' asset.pk %}" 
-               class="btn btn-primary btn-sm">Edit</a>
-            <a href="{% url 'asset_delete' asset.pk %}" 
-               class="btn btn-error btn-sm">Delete</a>
-            <button onclick="window.print()" 
-               class="btn btn-outline btn-sm">Print</button>
+<section class="section">
+    <div class="container">
+        <h1 class="title">{{ asset.name }}</h1>
+        <div class="box">
+            <p><strong>Type:</strong> {{ asset.asset_type }}</p>
+            <p><strong>Serial Number:</strong> {{ asset.serial_number }}</p>
+            <p><strong>Purchase Date:</strong> {{ asset.purchase_date }}</p>
+            <p><strong>Warranty Expiry:</strong> {{ asset.warranty_expiry }}</p>
+            <p><strong>Assigned To:</strong> {{ asset.assigned_to }}</p>
         </div>
+        <a href="{% url 'asset_list' %}" class="button">Back to List</a>
     </div>
-
-    <!-- Details Grid -->
-    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-        
-        <!-- Core Info -->
-        <div class="card bg-base-100 shadow-md">
-            <div class="card-body">
-                <h2 class="card-title mb-2">Core Details</h2>
-                <p><strong>Asset Tag:</strong> {{ asset.asset_tag }}</p>
-                {% if asset.alloted_to %}
-                    <p><strong>Allotted To:</strong> {{ asset.alloted_to }}</p>
-                {% endif %}
-                <p><strong>Make & Model:</strong> {{ asset.make_model }}</p>
-                <p><strong>CPU Serial Number:</strong> {{ asset.cpu_serial_number }}</p>
-                <p><strong>Year of Purchase:</strong> {{ asset.year_of_purchase }}</p>
-                <p><strong>Condition:</strong> {{ asset.condition }}</p>
-                {% if asset.remarks %}
-                    <p><strong>Remarks:</strong> {{ asset.remarks }}</p>
-                {% endif %}
-            </div>
-        </div>
-
-        <!-- Configuration -->
-        <div class="card bg-base-100 shadow-md">
-            <div class="card-body">
-                <h2 class="card-title mb-2">Configuration</h2>
-                <p><strong>Processor:</strong> {{ asset.processor }}</p>
-                <p><strong>RAM:</strong> {{ asset.ram }}</p>
-                {% if asset.hdd %}<p><strong>HDD:</strong> {{ asset.hdd }}</p>{% endif %}
-                {% if asset.ssd %}<p><strong>SSD:</strong> {{ asset.ssd }}</p>{% endif %}
-                <p><strong>Operating System:</strong> {{ asset.os }}</p>
-            </div>
-        </div>
-
-        <!-- Peripherals -->
-        {% if asset.monitor_make_model or asset.keyboard_mouse or asset.ups_make_model or asset.printer_make_model %}
-        <div class="card bg-base-100 shadow-md md:col-span-2">
-            <div class="card-body">
-                <h2 class="card-title mb-2">Peripherals</h2>
-                {% if asset.monitor_make_model %}
-                    <p><strong>Monitor:</strong> {{ asset.monitor_make_model }}{% if asset.monitor_serial_number %} (S/N: {{ asset.monitor_serial_number }}){% endif %}</p>
-                {% endif %}
-                {% if asset.keyboard_mouse %}
-                    <p><strong>Keyboard & Mouse:</strong> {{ asset.keyboard_mouse }}</p>
-                {% endif %}
-                {% if asset.ups_make_model %}
-                    <p><strong>UPS:</strong> {{ asset.ups_make_model }}{% if asset.ups_serial_number %} (S/N: {{ asset.ups_serial_number }}){% endif %}</p>
-                {% endif %}
-                {% if asset.printer_make_model %}
-                    <p><strong>Printer:</strong> {{ asset.printer_make_model }}{% if asset.printer_serial_number %} (S/N: {{ asset.printer_serial_number }}){% endif %}</p>
-                {% endif %}
-            </div>
-        </div>
-        {% endif %}
-
-    </div>
-</div>
+</section>
 {% endblock %}
