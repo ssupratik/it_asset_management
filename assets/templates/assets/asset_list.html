@@ -4,36 +4,110 @@
 <section class="section">
   <div class="container">
     <h1 class="title">Assets</h1>
+
+    <!-- Export button for admin only -->
+    {% if request.user.is_staff %}
+      <a href="{% url 'export_current_data' %}" class="button is-info mb-4" style="float:right;">Export Assets CSV</a>
+    {% endif %}
+
+    <!-- search & filters -->
+    <form method="get" class="field has-addons mb-4">
+      <div class="control is-expanded">
+        <input class="input" type="text" name="q" placeholder="Search by name, serial, type or person" value="{{ q }}">
+      </div>
+      <div class="control">
+        <div class="select">
+          <select name="type">
+            <option value="">All Types</option>
+            {% for t in types %}
+              <option value="{{ t.type__id }}" {% if t.type__id|stringformat:"s" == type_id %}selected{% endif %}>{{ t.type__name }}</option>
+            {% endfor %}
+          </select>
+        </div>
+      </div>
+      <div class="control">
+        <div class="select">
+          <select name="status">
+            <option value="">All Statuses</option>
+            {% for s in statuses %}
+              <option value="{{ s.0 }}" {% if s.0|stringformat:"s" == status %}selected{% endif %}>{{ s.1 }}</option>
+            {% endfor %}
+          </select>
+        </div>
+      </div>
+      <div class="control">
+        <div class="select">
+          <select name="assigned">
+            <option value="">All Assignees</option>
+            {% for emp in employees %}
+              <option value="{{ emp.id }}" {% if emp.id|stringformat:"s" == assigned_id %}selected{% endif %}>{{ emp.first_name }} {{ emp.last_name }}</option>
+            {% endfor %}
+          </select>
+        </div>
+      </div>
+      <div class="control">
+        <button type="submit" class="button is-info">Filter</button>
+      </div>
+      <div class="control">
+        <a href="{% url 'asset_list' %}" class="button">Clear</a>
+      </div>
+    </form>
+    <!-- end search & filters -->
+
     <a href="{% url 'asset_create' %}" class="button is-primary mb-4">Add Asset</a>
     <table class="table is-fullwidth is-striped">
       <thead>
         <tr>
-          <th>Name</th>
+          <th>Make/Model</th>
           <th>Type</th>
           <th>Serial No.</th>
+          <th>Config (RAM / OS)</th>
           <th>Assigned To</th>
-          <th>Status</th>
-          <th>Purchase Date</th>
+          <th>Condition</th>
+          <th>Year</th>
           <th>Actions</th>
         </tr>
       </thead>
       <tbody>
         {% for asset in assets %}
         <tr>
-          <td>{{ asset.name }}</td>
-          <td>{{ asset.asset_type }}</td>
-          <td>{{ asset.serial_number }}</td>
-          <td>{{ asset.assigned_to }}</td>
-          <td>{{ asset.status }}</td>
-          <td>{{ asset.purchase_date }}</td>
           <td>
-            <a class="button is-small is-link" href="{% url 'asset_update' asset.id %}">Edit</a>
-            <a class="button is-small is-danger" href="{% url 'asset_delete' asset.id %}">Delete</a>
+            <a href="{% url 'asset_detail' asset.id %}">
+              {{ asset.make_model|default:"-" }}
+            </a>
+          </td>
+          <td>{{ asset.type.name|default:"-" }}</td>
+          <td>{{ asset.serial_number|default:"-" }}</td>
+          <td>
+            {% if asset.ram or asset.os %}
+              {{ asset.ram|default:"" }}{% if asset.ram and asset.os %} / {% endif %}{{ asset.os|default:"" }}
+            {% else %}
+              -
+            {% endif %}
+          </td>
+          <td>
+            {% if asset.alloted_to %}
+              {{ asset.alloted_to.first_name }} {{ asset.alloted_to.last_name }}
+            {% else %}
+              -
+            {% endif %}
+          </td>
+          <td>{{ asset.condition|default:"-" }}</td>
+          <td>{{ asset.year_of_purchase|default:"-" }}</td>
+          <td>
+            <a class="button is-small is-link" href="{% url 'asset_detail' asset.id %}">View</a>
+            <a class="button is-small is-info" href="{% url 'asset_update' asset.id %}">Edit</a>
+            {% if perms.assets.delete_asset %}
+            <form method="post" action="{% url 'asset_delete' asset.id %}" style="display:inline;">
+              {% csrf_token %}
+              <button class="button is-small is-danger" type="submit">Delete</button>
+            </form>
+            {% endif %}
           </td>
         </tr>
         {% empty %}
         <tr>
-          <td colspan="7" class="has-text-centered">No assets found.</td>
+          <td colspan="8" class="has-text-centered">No assets found.</td>
         </tr>
         {% endfor %}
       </tbody>

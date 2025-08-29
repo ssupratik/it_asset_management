@@ -22,16 +22,28 @@ REPAIR_STATUS_CHOICES = [
 
 
 class Employee(models.Model):
-    full_name = models.CharField(max_length=100)
-    designation = models.CharField(max_length=100)
-    email = models.EmailField(null=True, blank=True)
+    first_name = models.CharField(max_length=100)
+    last_name = models.CharField(max_length=100)
+    section = models.CharField(max_length=100, blank=True, null=True)
+    designation = models.CharField(max_length=150)
+    email = models.EmailField(unique=True, blank=True, null=True)
+    phone = models.CharField(max_length=15, unique=True, blank=True, null=True)
+
+    created_at = models.DateTimeField(auto_now_add=True)
+
+    class Meta:
+        ordering = ["first_name", "last_name"]
 
     def __str__(self):
-        return self.full_name
+        return self.get_full_name()
+
+    def get_full_name(self):
+        return f"{self.first_name} {self.last_name}"
 
 
 class AssetType(models.Model):
     """Type of asset e.g. CPU, Monitor, UPS, Printer, Keyboard/Mouse"""
+
     name = models.CharField(max_length=100, unique=True)
     category = models.CharField(max_length=100, blank=True, null=True)
 
@@ -50,6 +62,10 @@ class Asset(models.Model):
     make_model = models.CharField(max_length=200)
     serial_number = models.CharField(max_length=100, blank=True, null=True)
     year_of_purchase = models.PositiveIntegerField()
+    ram = models.CharField(max_length=100, blank=True, null=True)
+    hdd = models.CharField(max_length=100, blank=True, null=True)
+    ssd = models.CharField(max_length=100, blank=True, null=True)
+    os = models.CharField(max_length=100, blank=True, null=True)
 
     condition = models.CharField(
         max_length=20, choices=CONDITION_CHOICES, default="working"

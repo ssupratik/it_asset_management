@@ -8,7 +8,6 @@
             <thead>
                 <tr>
                     <th>Name</th>
-                    <th>Department</th>
                     <th>Designation</th>
                     <th>Email</th>
                     <th>Phone</th>
@@ -19,13 +18,17 @@
                 {% for emp in employees %}
                 <tr>
                     <td>{{ emp.first_name }} {{ emp.last_name }}</td>
-                    <td>{{ emp.department }}</td>
                     <td>{{ emp.designation }}</td>
-                    <td>{{ emp.email }}</td>
-                    <td>{{ emp.phone }}</td>
+                    <td>{{ emp.email|default_if_none:"-" }}</td>
++                   <td>{{ emp.phone|default_if_none:"-" }}</td>
                     <td>
                         <a href="{% url 'employee_edit' emp.id %}" class="button is-small is-info">Edit</a>
-                        <a href="{% url 'employee_delete' emp.id %}" class="button is-small is-danger">Delete</a>
+                        {% if perms.assets.delete_employee %}
+                        <form method="post" action="{% url 'employee_delete' emp.id %}" style="display:inline;">
+                        {% csrf_token %}
+                        <button class="button is-small is-danger" type="submit">Delete</button>
+                        </form>
+                        {% endif %}
                     </td>
                 </tr>
                 {% empty %}

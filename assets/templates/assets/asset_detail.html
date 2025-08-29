@@ -2,14 +2,39 @@
 {% block content %}
 <section class="section">
     <div class="container">
-        <h1 class="title">{{ asset.name }}</h1>
+        <h1 class="title">{{ asset.type.name }} - {{ asset.make_model }}</h1>
         <div class="box">
-            <p><strong>Type:</strong> {{ asset.asset_type }}</p>
-            <p><strong>Serial Number:</strong> {{ asset.serial_number }}</p>
-            <p><strong>Purchase Date:</strong> {{ asset.purchase_date }}</p>
-            <p><strong>Warranty Expiry:</strong> {{ asset.warranty_expiry }}</p>
-            <p><strong>Assigned To:</strong> {{ asset.assigned_to }}</p>
+            <p><strong>Serial Number:</strong> {{ asset.serial_number|default:"-" }}</p>
+            <p><strong>Year of Purchase:</strong> {{ asset.year_of_purchase|default:"-" }}</p>
+            {% if asset.ram %}<p><strong>RAM:</strong> {{ asset.ram }}</p>{% endif %}
+            {% if asset.hdd %}<p><strong>HDD:</strong> {{ asset.hdd }}</p>{% endif %}
+            {% if asset.ssd %}<p><strong>SSD:</strong> {{ asset.ssd }}</p>{% endif %}
+            {% if asset.os %}<p><strong>Operating System:</strong> {{ asset.os }}</p>{% endif %}
+            <p><strong>Condition:</strong> {{ asset.condition|default:"-" }}</p>
+            <p><strong>Remarks:</strong> {{ asset.remarks|default:"-" }}</p>
+            <p><strong>Assigned To:</strong> 
+              {% if asset.alloted_to %}
+                {{ asset.alloted_to.first_name }} {{ asset.alloted_to.last_name }}
+              {% else %}
+                -
+              {% endif %}
+            </p>
         </div>
+
+        <div class="box">
+            <h2 class="subtitle">Documents</h2>
+            {% if asset.documents.all %}
+              <ul>
+                {% for doc in asset.documents.all %}
+                  <li><a href="{{ doc.document.url }}" target="_blank">{{ doc.name }}</a> (Uploaded on {{ doc.uploaded_at|date:"Y-m-d" }})</li>
+                {% endfor %}
+              </ul>
+            {% else %}
+              <p>No documents uploaded.</p>
+            {% endif %}
+            <a href="{% url 'upload_document' asset.id %}" class="button is-info">Upload Document</a>
+        </div>
+
         <a href="{% url 'asset_list' %}" class="button">Back to List</a>
     </div>
 </section>

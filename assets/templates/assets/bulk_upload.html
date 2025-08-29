@@ -1,0 +1,27 @@
+{% extends "base.html" %}
+
+{% block content %}
+<h2 class="title is-3">Bulk Upload</h2>
+
+<form method="post" enctype="multipart/form-data">
+    {% csrf_token %}
+    <div class="field">
+        {{ form.csv_file.label_tag }}
+        <div class="control">
+            {{ form.csv_file }}
+        </div>
+        <p class="help">Upload CSV file (see sample format below).</p>
+    </div>
+    <div class="control">
+        <button type="submit" class="button is-primary">Upload</button>
+    </div>
+</form>
+
+<hr>
+
+<h3 class="title is-4">Download Sample CSV Format (Combined)</h3>
+<p>
+    <a href="{% url 'download_sample_csv' %}" class="button is-info">Download Combined CSV Sample</a>
+</p>
+
+{% endblock %}

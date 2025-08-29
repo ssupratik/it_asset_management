@@ -9,7 +9,6 @@ class EmployeeForm(forms.ModelForm):
         fields = [
             "first_name",
             "last_name",
-            "department",
             "designation",
             "email",
             "phone",

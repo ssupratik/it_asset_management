@@ -1,3 +1,4 @@
+<!-- ...existing code... -->
 {% extends "base.html" %}
 
 {% block content %}
@@ -5,60 +6,101 @@
 
 <!-- Stats cards -->
 <div class="columns is-multiline">
-    <div class="column is-one-quarter">
-        <div class="box has-text-centered">
+    <div class="column is-one-fifth">
+        <a href="{% url 'asset_list' %}" class="box has-text-centered is-block stat-card" data-filter="all" style="color:inherit">
             <h3 class="subtitle is-6">Total Assets</h3>
-            <p class="title is-2 has-text-primary">{{ total_assets }}</p>
-        </div>
+            <p class="title is-2 has-text-primary">{{ total_assets|default:0 }}</p>
+        </a>
     </div>
-    <div class="column is-one-quarter">
-        <div class="box has-text-centered">
+    <div class="column is-one-fifth">
+        <a href="{% url 'asset_list' %}?assigned=true" class="box has-text-centered is-block stat-card" data-filter="assigned" data-assigned="true" style="color:inherit">
             <h3 class="subtitle is-6">Assigned</h3>
-            <p class="title is-2 has-text-success">{{ assigned_assets }}</p>
-        </div>
+            <p class="title is-2 has-text-success">{{ assigned_assets|default:0 }}</p>
+        </a>
     </div>
-    <div class="column is-one-quarter">
-        <div class="box has-text-centered">
+    <div class="column is-one-fifth">
+        <a href="{% url 'asset_list' %}?status=damaged" class="box has-text-centered is-block stat-card" data-filter="damaged" data-status="damaged" style="color:inherit">
+            <h3 class="subtitle is-6">Damaged</h3>
+            <p class="title is-2 has-text-warning">{{ damaged_assets|default:0 }}</p>
+        </a>
+    </div>
+    <div class="column is-one-fifth">
+        <a href="{% url 'asset_list' %}?status=repair" class="box has-text-centered is-block stat-card" data-filter="repair" data-status="repair" style="color:inherit">
             <h3 class="subtitle is-6">Under Repair</h3>
-            <p class="title is-2 has-text-warning">{{ under_repair }}</p>
-        </div>
+            <p class="title is-2 has-text-warning">{{ under_repair|default:0 }}</p>
+        </a>
     </div>
-    <div class="column is-one-quarter">
-        <div class="box has-text-centered">
+
+    <div class="column is-one-fifth">
+        <a href="{% url 'asset_list' %}?status=disposed" class="box has-text-centered is-block stat-card" data-filter="disposed" data-status="disposed" style="color:inherit">
             <h3 class="subtitle is-6">Disposed</h3>
-            <p class="title is-2 has-text-danger">{{ disposed_assets }}</p>
-        </div>
+            <p class="title is-2 has-text-danger">{{ disposed_assets|default:0 }}</p>
+        </a>
     </div>
 </div>
 
-<!-- Recent assets table -->
-<div class="box">
-    <table class="table is-fullwidth is-hoverable is-striped">
-        <thead>
-            <tr>
-                <th>ID</th>
-                <th>Name</th>
-                <th>Category</th>
-                <th>Status</th>
-                <th>Allotted To</th>
-            </tr>
-        </thead>
-        <tbody>
-            {% for asset in assets %}
-            <tr>
-                <td>{{ asset.id }}</td>
-                <td>{{ asset.make_model }}</td>
-                <td>{{ asset.category }}</td>
-                <td>{{ asset.condition }}</td>
-                <td>{{ asset.alloted_to|default:"-" }}</td>
-            </tr>
-            {% empty %}
-            <tr>
-                <td colspan="5" class="has-text-centered has-text-grey-light">No assets found.</td>
-            </tr>
+<!-- Search for employees / assets -->
+<div class="box mb-4">
+  <form method="get" class="field has-addons">
+    <div class="control is-expanded">
+      <input class="input" type="text" name="q" placeholder="Search employees, asset name or category" value="{{ q }}">
+    </div>
+    <div class="control">
+      <button type="submit" class="button is-info">Search</button>
+    </div>
+    <div class="control">
+      <a href="{% url 'dashboard' %}" class="button">Clear</a>
+    </div>
+  </form>
+</div>
+
+<!-- Employees summary -->
+<div class="box mt-1">
+  <h3 class="title is-5">Employees & Assigned Assets</h3>
+  <table class="table is-fullwidth is-striped">
+    <thead>
+      <tr>
+        <th>SL</th>
+        <th>Name</th>
+        <th>No of Assets</th>
+        <th>Categories</th>
+        <th>Assigned Assets (click to view all)</th>
+      </tr>
+    </thead>
+    <tbody>
+      {% for emp in employees_data %}
+      <tr>
+        <td>{{ emp.sl }}</td>
+        <td>
+          <a href="{% url 'asset_list' %}?assigned={{ emp.id }}">{{ emp.name }}</a>
+        </td>
+        <td>{{ emp.asset_count|default:0 }}</td>
+        <td>
+          {% if emp.categories %}
+            {% for cat in emp.categories %}
+              <a href="{% url 'asset_list' %}?assigned={{ emp.id }}&type={{ cat.id }}">{{ cat.name }}</a>{% if not forloop.last %}, {% endif %}
             {% endfor %}
-        </tbody>
-    </table>
+          {% else %}
+            -
+          {% endif %}
+        </td>
+        <td>
+          {% if emp.sample_assets %}
+            {% for name in emp.sample_assets %}
+              <a href="{% url 'asset_list' %}?assigned={{ emp.id }}">{{ name }}</a>{% if not forloop.last %}, {% endif %}
+            {% endfor %}
+          {% else %}
+            -
+          {% endif %}
+        </td>
+      </tr>
+      {% empty %}
+      <tr>
+        <td colspan="5" class="has-text-centered has-text-grey-light">No employees found.</td>
+      </tr>
+      {% endfor %}
+    </tbody>
+  </table>
 </div>
 
 <!-- View all link -->
@@ -68,3 +110,4 @@
     </a>
 </div>
 {% endblock %}
+<!-- ...existing code... -->

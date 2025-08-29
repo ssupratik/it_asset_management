@@ -1,35 +1,42 @@
-{% extends 'base.html' %}
+{% extends "base.html" %}
 {% block content %}
-<section class="section">
-    <div class="container">
-        <h1 class="title">Asset Transfer History</h1>
-        <a href="{% url 'history_create' %}" class="button is-primary mb-4">Add History</a>
-        <table class="table is-striped is-fullwidth">
-            <thead>
-                <tr>
-                    <th>Asset</th>
-                    <th>From</th>
-                    <th>To</th>
-                    <th>Date</th>
-                    <th>Remarks</th>
-                </tr>
-            </thead>
-            <tbody>
-                {% for history in histories %}
-                <tr>
-                    <td>{{ history.asset.name }}</td>
-                    <td>{{ history.from_employee }}</td>
-                    <td>{{ history.to_employee }}</td>
-                    <td>{{ history.transfer_date }}</td>
-                    <td>{{ history.remarks }}</td>
-                </tr>
-                {% empty %}
-                <tr>
-                    <td colspan="5">No history records found.</td>
-                </tr>
-                {% endfor %}
-            </tbody>
-        </table>
-    </div>
-</section>
+<h2 class="text-xl font-bold mb-4">Asset History</h2>
+<table class="table-auto w-full border-collapse border">
+  <thead>
+    <tr class="bg-gray-200">
+      <th class="border p-2">Asset</th>
+      <th class="border p-2">Action</th>
+      <th class="border p-2">Employee</th>
+      <th class="border p-2">Performed By</th>
+      <th class="border p-2">Date</th>
+      <th class="border p-2">Remarks</th>
+      <th class="border p-2">Details</th>
+    </tr>
+  </thead>
+  <tbody>
+    {% for history in histories %}
+    <tr>
+      <td class="border p-2">{{ history.asset }}</td>
+      <td class="border p-2">{{ history.action|capfirst|default:"-" }}</td>
+      <td class="border p-2">
+        {% if history.employee %}
+          {{ history.employee.first_name }} {{ history.employee.last_name }}
+        {% else %}
+          -
+        {% endif %}
+      </td>
+      <td class="border p-2">{{ history.performed_by.username|default:"System" }}</td>
+      <td class="border p-2">{{ history.timestamp|date:"Y-m-d H:i" }}</td>
+      <td class="border p-2">{{ history.remarks|default:"-"|truncatechars:80 }}</td>
+      <td class="border p-2">
+        <a href="{% url 'history_detail' history.pk %}" class="text-blue-600">View</a>
+      </td>
+    </tr>
+    {% empty %}
+    <tr>
+      <td colspan="7" class="p-4 text-center">No history records found.</td>
+    </tr>
+    {% endfor %}
+  </tbody>
+</table>
 {% endblock %}

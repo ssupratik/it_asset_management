@@ -9,7 +9,7 @@ https://docs.djangoproject.com/en/5.2/topics/settings/
 For the full list of settings and their values, see
 https://docs.djangoproject.com/en/5.2/ref/settings/
 """
-
+import os
 from pathlib import Path
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
@@ -53,7 +53,7 @@ MIDDLEWARE = [
     "django.contrib.auth.middleware.AuthenticationMiddleware",
     "django.contrib.messages.middleware.MessageMiddleware",
     "django.middleware.clickjacking.XFrameOptionsMiddleware",
-    "common.login_required.LoginRequiredMiddleware",
+    "common.current_user.CurrentUserMiddleware",
 ]
 
 ROOT_URLCONF = "core.urls"
@@ -124,6 +124,8 @@ USE_I18N = True
 
 USE_TZ = True
 
+MEDIA_URL = '/asset_documents/'
+MEDIA_ROOT = os.path.join(BASE_DIR, 'asset_documents')
 
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/5.2/howto/static-files/

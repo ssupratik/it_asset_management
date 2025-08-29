@@ -1,0 +1,26 @@
+{% extends "base.html" %}
+
+{% block content %}
+
+<h2 class="text-xl font-bold mb-4">History Detail</h2>
+
+<div class="border rounded p-4 bg-gray-50">
+  <p><strong>Asset:</strong> {{ history.asset }}</p>
+  <p><strong>Action:</strong> {{ history.action|capfirst|default:"-" }}</p>
+  <p><strong>Employee:</strong>
+    {% if history.employee %}
+      {{ history.employee.first_name }} {{ history.employee.last_name }}
+    {% else %}
+      -
+    {% endif %}
+  </p>
+  <p><strong>Performed By:</strong> {{ history.performed_by.username|default:"System" }}</p>
+  <p><strong>Date:</strong> {{ history.timestamp|date:"Y-m-d H:i" }}</p>
+  <p><strong>Remarks:</strong></p>
+  <div class="mt-2 p-3 bg-white border rounded">{% if history.remarks %}{{ history.remarks|linebreaks }}{% else %}-{% endif %}</div>
+</div>
+
+<div class="mt-4">
+  <a href="{% url 'history_list' %}" class="bg-gray-600 text-white px-4 py-2 rounded">Back to List</a>
+</div>
+{% endblock %}

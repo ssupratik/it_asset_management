@@ -4,7 +4,7 @@
 <section class="section">
   <div class="container">
     <h1 class="title">{{ form_title }}</h1>
-    <form method="post">
+    <form method="post" enctype="multipart/form-data">
       {% csrf_token %}
       <div class="field">
         {{ form.non_field_errors }}
@@ -16,16 +16,42 @@
           {{ field }}
         </div>
         {% if field.help_text %}
-        <p class="help">{{ field.help_text }}</p>
+          <p class="help">{{ field.help_text }}</p>
         {% endif %}
         {% for error in field.errors %}
-        <p class="help is-danger">{{ error }}</p>
+          <p class="help is-danger">{{ error }}</p>
         {% endfor %}
       </div>
       {% endfor %}
-      <div class="field">
+
+      <hr>
+      <h2 class="subtitle">Upload Documents</h2>
+      {{ formset.management_form }}
+      {% for doc_form in formset %}
+        <div class="box">
+          {% for field in doc_form %}
+            <div class="field">
+              <label class="label">{{ field.label }}</label>
+              <div class="control">
+                {{ field }}
+              </div>
+              {% for error in field.errors %}
+                <p class="help is-danger">{{ error }}</p>
+              {% endfor %}
+            </div>
+          {% endfor %}
+          {% if doc_form.instance.pk %}
+            <div class="field">
+              <label class="checkbox">
+                {{ doc_form.DELETE }} Delete
+              </label>
+            </div>
+          {% endif %}
+        </div>
+      {% endfor %}
+
+      <div class="control">
         <button type="submit" class="button is-primary">Save</button>
-        <a href="{% url 'asset_list' %}" class="button is-light">Cancel</a>
       </div>
     </form>
   </div>
